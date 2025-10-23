@@ -803,8 +803,10 @@ static int setup_opts_from_req(int sk, CriuOpts *req)
 	if (req->parent_img)
 		SET_CHAR_OPTS(img_parent, req->parent_img);
 
-	if (setup_images_and_workdir(images_dir_path, work_changed_by_rpc_conf, req, ids.pid))
-		goto err;
+	if (setup_images_and_workdir(images_dir_path, work_changed_by_rpc_conf, req, ids.pid)) {
+		set_cr_errno(ENOENT);
+		return -1;
+	}
 
 	if (req->n_irmap_scan_paths) {
 		for (i = 0; i < req->n_irmap_scan_paths; i++) {
